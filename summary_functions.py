@@ -33,6 +33,7 @@ def get_articles(query, amt):
 
     # Loop through results until the desired amount are retrieved
     summaries=''
+    flag = 0
     for count, result in enumerate(soup.find_all('div', class_='reviewpaper')):
         article = {}
         if count<amt:
@@ -54,12 +55,19 @@ def get_articles(query, amt):
             break
         #
         try:
-            summaries += summarize(article, query)
-        except ValueError as e:
+            summary = summarize(article, query)
+            if summary.strip():
+                summaries += summary
+            else:
+                flag = 1
+                summaries += 'Dog-gone it, I messed it up.'
+        except Exception as e:
             logger.error(f'Error {e} on {article["href"]}')
             amt+=1
+            flag = 1
+            summaries +='Dog-gone it, I messed it up.'
     logger.debug(f'Query: {query} \n Article summaries created: {summaries}')
-    return summaries
+    return (summaries, flag)
 
 
 # Summarization pipeline which takes in a single url
@@ -78,15 +86,15 @@ def produce_summary(url,query):
         elif paragraph.get('class'):
             pass
         else:
-            sentences.append(paragraph.text)
+            formatted_text = re.sub(r'\s+', ' ', paragraph.text)
+            sentences.append(formatted_text)
     response['headline'] = article.find(class_='cs_t1').text
 
     # Take just the text of the article and join it
     response['joined_sentences'] = ' '.join(sentences)
 
     # Preprocess full text
-    formatted_text = re.sub(r'\s+', ' ', response['joined_sentences'])
-    formatted_text = re.sub('[^a-zA-Z]', ' ', formatted_text)
+    formatted_text = re.sub('[^a-zA-Z]', ' ', response['joined_sentences'])
     formatted_text = re.sub(r'\s+', ' ', formatted_text)
 
     # Retokenize processed sentences and load standard stopwords
