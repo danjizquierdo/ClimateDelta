@@ -9,12 +9,21 @@ import logging
 # nltk.download('punkt')
 # nltk.download('stopwords')
 logger = logging.getLogger('requester')
+m_logger = logging.getLogger('modeler')
 logger.setLevel(logging.DEBUG)
+m_logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler('articles.log')
+m_fh = logging.FileHandler('summaries.log')
 fh.setLevel(logging.DEBUG)
+m_fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter(fmt='%(asctime)s;%(message)s-', datefmt='%m-%d-%Y %H:%M:%S')
+m_formatter = logging.Formatter(
+    fmt='%(asctime)s;Query:%(message)s \n %(headline)s: \n%(joined_sentences)s \n\nSummary\n\n %(summary)s',
+    datefmt='%m-%d-%Y %H:%M:%S')
 fh.setFormatter(formatter)
+m_fh.setFormatter(m_formatter)
 logger.addHandler(fh)
+m_logger.addHandler(m_fh)
 
 # Article requests which prints headline, authors, publish date and the summary
 def get_articles(query, amt):
@@ -45,16 +54,16 @@ def get_articles(query, amt):
             break
         #
         try:
-            summaries += summarize(article)
+            summaries += summarize(article, query)
         except ValueError as e:
-            logger.debug(f'Error {e} on {article["href"]}')
+            logger.error(f'Error {e} on {article["href"]}')
             amt+=1
     logger.debug(f'Query: {query} \n Article summaries created: {summaries}')
     return summaries
 
 
 # Summarization pipeline which takes in a single url
-def produce_summary(url):
+def produce_summary(url,query):
     response = {}
 
     # Request given article
@@ -83,15 +92,19 @@ def produce_summary(url):
     # Retokenize processed sentences and load standard stopwords
     sentence_list = nltk.sent_tokenize(response['joined_sentences'])
     stopwords = nltk.corpus.stopwords.words('english')
+    stopwords.extend('Figure')
 
     # Determine word frequencies for full article
     word_frequencies = {}
     for word in nltk.word_tokenize(formatted_text):
         if word not in stopwords:
             if word not in word_frequencies.keys():
-                word_frequencies[word.lower()] = 1
+                    word_frequencies[word.lower()] = 1
             else:
-                word_frequencies[word.lower()] += 1
+                if word in query:
+                    word_frequencies[word.lower()] += 3
+                else:
+                    word_frequencies[word.lower()] += 1
     maximum_frequncy = max(word_frequencies.values())
 
     # Scale frequencies to most common non-stop word
@@ -112,11 +125,12 @@ def produce_summary(url):
     summary_sentences = heapq.nlargest(int(len(sentence_list) ** (1 / 2)), sentence_scores, key=sentence_scores.get)
     summary_sentences.sort(key=sentence_list.index)
     response['summary'] = ' '.join(summary_sentences)
+    m_logger.debug(f'{query}', extra=response)
     return response
 
 
-def summarize(article):
-    response = produce_summary(article['href'])
+def summarize(article,query):
+    response = produce_summary(article['href'],query)
 
     return '\n'.join(
         [response['headline'],
