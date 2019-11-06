@@ -5,9 +5,6 @@ import nltk
 import heapq
 import logging
 
-# # Necessary downloads
-nltk.download('punkt')
-nltk.download('stopwords')
 logger = logging.getLogger('requester')
 m_logger = logging.getLogger('modeler')
 logger.setLevel(logging.DEBUG)
