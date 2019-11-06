@@ -32,7 +32,7 @@ def get_articles(query, amt):
                            '&searchField=All&page=1&SKID=58821535').text,'html.parser')
 
     # Loop through results until the desired amount are retrieved
-    summaries=''
+    summaries = []
     flag = 0
     for count, result in enumerate(soup.find_all('div', class_='reviewpaper')):
         article = {}
@@ -40,7 +40,7 @@ def get_articles(query, amt):
             for p in result.find_next_siblings():
                 # Find the full_html link
                 if p.span:
-                    article['href']=p.span.a.get('href')[2:]
+                    article['href'] = p.span.a.get('href')[2:]
                     break
                 else:
                     continue
@@ -49,33 +49,38 @@ def get_articles(query, amt):
             cite = {}
             # Create author dictionaries
             for author in authors:
-                cite[author.text]=author.get('href')
-            article['authors']=cite
+                cite[author.text] = 'https://www.scirp.org/journal/'+author.get('href')
+            article['authors'] = cite
         else:
             break
         #
         try:
             summary = summarize(article, query)
-            if summary.strip():
-                summaries += summary
+            if summary:
+                summaries.append(summary)
             else:
                 flag = 1
-                summaries += 'Dog-gone it, I messed it up.'
+                amt+=1
         except Exception as e:
             logger.error(f'Error {e} on {article["href"]}')
-            amt+=1
+            amt += 1
             flag = 1
-            summaries +='Dog-gone it, I messed it up.'
+
     logger.debug(f'Query: {query} \n Article summaries created: {summaries}')
-    return (summaries, flag)
+    if len(summaries):
+        flag = 0
+        return summaries, flag
+    else:
+        return 'Dog-gone it, I messed it up', flag
 
 
 # Summarization pipeline which takes in a single url
-def produce_summary(url,query):
+def summarize(article_dict, query):
     response = {}
-
+    response['authors'] = article_dict['authors']
+    response['url'] = 'https://'+article_dict['href']
     # Request given article
-    article = bs(requests.get('https://' + url).text, 'html.parser')
+    article = bs(requests.get(response['url']).text, 'html.parser')
 
     # Get a list of all sentences in the article
     response['date'] = article.find(class_='cs_time').text
@@ -86,8 +91,11 @@ def produce_summary(url,query):
         elif paragraph.get('class'):
             pass
         else:
-            formatted_text = re.sub(r'\s+', ' ', paragraph.text)
-            sentences.append(formatted_text)
+            formatted_text = re.sub(r'\s+', ' ', str(paragraph.text))
+            formatted_text = re.sub(r'\[[0-9]+\]', '', formatted_text)
+            formatted_text = re.sub(r' \.', '.', formatted_text)
+            formatted_text = re.sub(r' , ', ' ', formatted_text)
+            sentences.append(formatted_text.strip())
     response['headline'] = article.find(class_='cs_t1').text
 
     # Take just the text of the article and join it
@@ -137,10 +145,10 @@ def produce_summary(url,query):
     return response
 
 
-def summarize(article,query):
-    response = produce_summary(article['href'],query)
-
-    return '\n'.join(
-        [response['headline'],
-         'by ' + ', '.join([', '.join(list(article['authors'].keys())), response['date']]),
-         re.sub(r'\n', ' ', response['summary']).strip()]) + '\n\n'
+# def summarize(article,query):
+#     response = produce_summary(article['href'],query)
+#
+#     return '\n'.join(
+#         [response['headline'],
+#          'by ' + ', '.join([', '.join(list(article['authors'].keys())), response['date']]),
+#          re.sub(r'\n', ' ', response['summary']).strip()]) + '\n\n'
