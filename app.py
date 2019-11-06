@@ -14,11 +14,11 @@ def render_page():
 def render_article():
     query = request.form.get('query')
     amt = request.form.get('amt')
-    summary, flag = get_articles(query,amt)
+    summary, flag = get_articles(query, amt)
     if not flag:
-        return render_template('results.html', summary=summary, query=query)
+        return render_template('results.html', summaries=summary, query=query, amt=amt)
     elif flag:
-        return render_template('no_results.html', summary=summary)
+        return render_template('no_results.html', summaries=summary)
 
 if __name__ == '__main__':
     app.run()
