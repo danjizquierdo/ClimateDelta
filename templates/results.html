@@ -13,6 +13,9 @@
 
 <style>
 
+    body {
+      background-color: #37bd79
+    }
     .center {
       display: block;
       margin-left: auto;
@@ -26,11 +29,11 @@
     width: 150px;
     }
 
-    h1{color: #006699}
+    h1{color: #0457ac}
     h3{color: #0099e6}
 
     .card {
-    padding: 2px 16px;
+    padding: 8px 16px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
     -webkit-border-radius: 12px;
@@ -65,7 +68,7 @@
   </head>
   <br>
 
-<h3 style="text-align:center;"> We're learning about: {{ query }} </h3>
+<h1 style="text-align:center;"> We're learning about: {{ query }} </h1>
 <img src="{{url_for('static', filename='study_dog.jpg')}}" frameBorder="0" class="center thumbnail"/>
 
 {% for summary in summaries %}
