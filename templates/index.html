@@ -11,9 +11,10 @@
     <title>The Lab Report</title>
 
 <style>
-h1{color: #006699}
-h3{color: #0099e6}
-h4{color: #006969}
+body{background-color: f4e604}
+h1{color: #0457ac}
+h3{color: #37bd79}
+h4{color: #37bd79}
 
 .content {
   max-width: 500px;
@@ -39,16 +40,16 @@ h4{color: #006969}
     <h4 style="text-align:center;">Life's busy, and important strides in science are happening daily. Let's distill the results into bite-sized chonks.</h4>
 
     <img src="{{url_for('static', filename='science_dog.jpg')}}" frameBorder="0" class="center"/>
-    <h3 style="text-align:center;">Search terms:</h3>
+    <h3 style="text-align:center;">Number of articles and Search terms</h3>
 
-    <form method="POST" style="text-align:center;">
+    <form method="POST" style="text-align:center; padding: 12px 6px">
                     <select name="amt" id="amt">
                         <option select="selected" value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
                         <option value="4">Four</option>
                     </select>
-                    <input type="text" name="query" width="800"><br>
+                    <input type="text" name="query" width="800">
                     <input type="submit" value="Fetch"><br>
     </form>
 
