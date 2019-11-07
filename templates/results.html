@@ -19,9 +19,45 @@
       margin-right: auto;
       width: 50%;
     }
+    .thumbnail {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+    }
 
     h1{color: #006699}
     h3{color: #0099e6}
+
+    .card {
+    padding: 2px 16px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+
+    background-color: #a7e237
+    }
+    .headline {
+      -webkit-border-radius: 12px;
+      -moz-border-radius: 12px;
+      border-radius: 12px;
+      background-color: #f4e604;;
+      padding:6px 6px
+    }
+    .article{
+     padding: 6px 6px
+    }
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+    /* Add some padding inside the card container */
+    .container {
+      padding: 2px 16px;
+    }
 
 
 </style>
@@ -30,21 +66,23 @@
   <br>
 
 <h3 style="text-align:center;"> We're learning about: {{ query }} </h3>
-<img src="{{url_for('static', filename='study_dog.jpg')}}" frameBorder="0" class="center"/>
+<img src="{{url_for('static', filename='study_dog.jpg')}}" frameBorder="0" class="center thumbnail"/>
 
 {% for summary in summaries %}
-  <div>
-    <h2 style="text-align:center;">
+  <div class="card" style="background-color: #37bd79;">
+    <h2 class="headline" style="text-align:center;">
       <a href = {{summary['url']}}>{{summary['headline']}} </a>
     </h2>
-    <h4 style="text-align:center;">
-      <span>Authors: </span>
-      {% for author, link in summary['authors'].items() %}
-        <span><a href={{link}}>{{author}}</a> </span>
-      {% endfor %}
-    </h4>
-    <h4 style="text-align:center;">{{summary['date']}}</h4>
-    <p>{{summary['summary']}}</p>
+    <div class="card">
+      <h4 style="text-align:center;">
+        <span>Authors: </span>
+        {% for author, link in summary['authors'].items() %}
+          <span><a href={{link}}>{{author}}</a> </span>
+        {% endfor %}
+      </h4>
+      <h4 style="text-align:center;">{{summary['date']}}</h4>
+      <p>{{summary['summary']}}</p>
+    </div>
   </div>
   </br>
 {% endfor %}
