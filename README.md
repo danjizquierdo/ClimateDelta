@@ -1,1 +1,1 @@
-Motivation: Provide an automated resource for those looking to stay abreast of climate change related news.
+Motivation: Provide an automated resource for those looking to stay abreast of science and research related news.
