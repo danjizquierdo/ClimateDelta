@@ -140,12 +140,3 @@ def summarize(article_dict, query):
     response['summary'] = ' '.join(summary_sentences)
     m_logger.debug(f'{query}', extra=response)
     return response
-
-
-# def summarize(article,query):
-#     response = produce_summary(article['href'],query)
-#
-#     return '\n'.join(
-#         [response['headline'],
-#          'by ' + ', '.join([', '.join(list(article['authors'].keys())), response['date']]),
-#          re.sub(r'\n', ' ', response['summary']).strip()]) + '\n\n'

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Digging into the Lab Report</title>
+
+<style>
+body{background-color: #f4e604}
+h1{color: #0457ac}
+h3{color: #37bd79}
+h4{color: #37bd79}
+
+.content {
+  max-width: 500px;
+  margin: auto;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+.card {
+padding: 8px 16px;
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+transition: 0.3s;
+-webkit-border-radius: 12px;
+-moz-border-radius: 12px;
+border-radius: 12px;
+
+background-color: #a7e237
+}
+</style>
+
+  </head>
+  <body>
+
+
+
+    <h1 style="text-align:center;">About The Lab Report</h1>
+    <p></p>
+    <h4 style="text-align:center;">Life's busy, and important strides in science are happening daily. Let's distill the results into bite-sized chonks.</h4>
+
+    <img src="{{url_for('static', filename='science_dog.jpg')}}" frameBorder="0" class="center"/>
+    <h3 style="text-align:center;">Number of articles and Search terms</h3>
+
+    <form method="POST" style="text-align:center; padding: 12px 6px">
+                    <select name="amt" id="amt">
+                        <option select="selected" value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                    </select>
+                    <input type="text" name="query" width="800">
+                    <input type="submit" value="Fetch"><br>
+    </form>
+
+
+  </body>
+</html>
