@@ -21,7 +21,7 @@ pexpect==4.7.0
 ptyprocess==0.6.0
 pyasn1==0.4.6
 requests==2.22.0
-rsa==3.4.2
+rsa==4.7
 six==1.12.0
 soupsieve==1.9.4
 testpath==0.4.2
